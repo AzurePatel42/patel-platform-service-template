@@ -11,9 +11,13 @@ def register_exception_handlers(app: FastAPI):
         request: Request,
         exc: NotFoundException
     ):
-        return JSONResponse(
-            status_code=404,
-            content={
-                "detail": exc.message
-            }
-        )
+       return JSONResponse(
+    status_code=404,
+    content={
+        "success": False,
+        "error": {
+            "type": "NotFoundException",
+            "message": exc.message
+        }
+    }
+)
