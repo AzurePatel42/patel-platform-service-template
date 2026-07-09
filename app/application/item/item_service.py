@@ -1,6 +1,8 @@
 
 from app.domain.item.item_rules import ItemRules
 from app.application.contracts.item_schemas import ItemResponse
+from app.core.exceptions import NotFoundException
+
 
 class ItemService:
 
@@ -24,7 +26,7 @@ class ItemService:
         item = self.repo.get_by_id(item_id)
 
         if item is None:
-            return None
+            raise NotFoundException("Item not found")
         
         return self._to_response(item)
 
@@ -33,7 +35,7 @@ class ItemService:
         item = self.repo.get_by_id(item_id)
 
         if item is None:
-            return None
+            raise NotFoundException("Item not found")
 
         updated = self.repo.update(item, data)
 
@@ -42,11 +44,12 @@ class ItemService:
         
     
     def delete_item(self, item_id: int):
-        item = self.repo.get_by_id(item_id)
-        if item is None:
-            return None
-        self.repo.delete(item)
-        return True
+        deleted = self.repo.get_by_id(item_id)
+        if not deleted:
+            raise NotFoundException("Item not found")
+        
+        self.repo.delete(deleted)
+        return {"message": "Item deleted successfully"}
 
     def _to_response(self, item) -> ItemResponse:
          return ItemResponse(
