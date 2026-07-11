@@ -1,408 +1,303 @@
 # Patel Platform Service Template (PPST)
 
-## What is PPST?
+A production-oriented backend application template built with **Python**, **FastAPI**, and **Clean Architecture**.
 
-Patel Platform Service Template (PPST) is a reusable backend application template built with Python and FastAPI.
+PPST provides a reusable engineering foundation that enables developers to build consistent, maintainable, and scalable backend services without repeatedly solving the same infrastructure problems.
 
-Its purpose is not simply to create REST APIs.
-
-Its purpose is to provide a consistent engineering foundation that every backend service in the Patel Engineering ecosystem can inherit.
-
-Instead of rebuilding architecture for every project, PPST provides a production-oriented starting point that already includes:
-
-* Clean Architecture
-* Dependency Injection
-* Repository Pattern
-* Configuration Management
-* Structured Logging
-* Global Exception Handling
-* Standardized API Contracts
-* Unit Testing
-* Extensible Infrastructure
-
-Every future backend service should begin with PPST and then customize only its business domain.
+Instead of rebuilding project structure, dependency injection, logging, exception handling, configuration, testing, and architectural patterns for every new project, PPST provides these capabilities out of the box so developers can focus on implementing business logic.
 
 ---
 
-## The Problem PPST Solves
+# Table of Contents
 
-Many developers build each project independently.
-
-As projects grow, they often develop:
-
-* Different folder structures
-* Different coding styles
-* Different logging approaches
-* Different error handling
-* Different dependency management
-* Different testing strategies
-
-Over time, maintaining multiple projects becomes increasingly difficult because each one follows different engineering practices.
-
-PPST solves this problem by establishing one consistent architecture that every service shares.
-
-Instead of reinventing infrastructure, developers can focus on implementing business logic.
-
-This approach improves maintainability, readability, scalability, onboarding, and long-term development speed.
-
----
-
-## Design Philosophy
-
-PPST follows one simple principle:
-
-**Infrastructure should remain stable. Business logic should change.**
-
-When creating a new service, only a few parts should differ:
-
-* Domain models
-* Business rules
-* Contracts
-* Repository implementation
-
-Everything else—including project structure, configuration, logging, exception handling, dependency injection, and testing—should remain consistent across services.
-
-This creates predictable systems that are easier to understand, extend, and maintain.
-
-# Architecture Philosophy
-
-PPST is built around one fundamental software engineering principle:
-
-> Every layer should have one responsibility.
-
-As software systems grow, mixing responsibilities makes applications difficult to understand, test, and maintain.
-
-PPST separates the application into independent layers so that each layer focuses on solving one specific problem.
-
-This approach follows the principles of Separation of Concerns (SoC) and Clean Architecture.
+1. Introduction
+2. Why PPST Exists
+3. Design Philosophy
+4. Engineering Principles
+5. Architecture Overview
+6. Request Lifecycle
+7. Project Structure
+8. Layer Responsibilities
+9. Dependency Injection
+10. Configuration
+11. Logging
+12. Global Exception Handling
+13. Repository Pattern
+14. Domain Rules
+15. Testing
+16. Building a New Service
+17. Current Features
+18. Roadmap
 
 ---
 
-## The Four Core Layers
+# 1. Introduction
 
-PPST organizes application logic into four primary layers.
+Patel Platform Service Template (PPST) is a reusable backend application template designed to standardize software architecture across every backend service in the Patel Engineering ecosystem.
 
+Rather than serving as a simple CRUD starter project, PPST provides a production-oriented engineering foundation that encourages consistency, maintainability, scalability, and clean separation of responsibilities.
 
-                API
-                 │
-                 ▼
-          Application
-                 │
-                 ▼
-              Domain
-                 │
-                 ▼
-         Infrastructure
+The template already includes the common infrastructure required by modern backend services, allowing developers to spend their time solving business problems instead of rebuilding the same technical foundation.
 
+PPST currently includes:
 
-Each layer communicates only with the layer directly below it.
+- Clean Architecture
+- Layered Design
+- Dependency Injection
+- Repository Pattern
+- SQLAlchemy Integration
+- Configuration Management
+- Structured Logging
+- Global Exception Handling
+- Standardized API Contracts
+- Unit Testing
+- Extensible Project Structure
 
-Lower layers never depend on higher layers.
-
-This creates a predictable and maintainable application architecture.
-
----
-
-## API Layer
-
-Purpose:
-
-Receive HTTP requests and return HTTP responses.
-
-Responsibilities:
-
-- Define API endpoints
-- Validate incoming requests
-- Return response contracts
-- Convert HTTP requests into service calls
-
-The API layer should never contain business logic.
-
-Example:
-
-GET /items
-
-should simply call:
-
-ItemService.get_item()
-
-without making business decisions.
+Every future backend service should inherit this template and customize only its business domain.
 
 ---
 
-## Application Layer
+# 2. Why PPST Exists
 
-Purpose:
+As organizations build more backend services, projects often begin to drift apart.
 
-Coordinate application use cases.
+Different developers make different architectural decisions, resulting in inconsistent folder structures, coding styles, logging strategies, testing approaches, dependency management, and error handling.
 
-Responsibilities:
+Over time, this inconsistency creates unnecessary complexity.
 
-- Execute business workflows
-- Call repositories
-- Coordinate multiple operations
-- Convert database models into response contracts
+Instead of maintaining one engineering standard, every project becomes its own unique system that developers must learn independently.
 
-The application layer acts as the orchestrator of the system.
+Typical problems include:
 
-It answers the question:
+- Different folder structures
+- Different logging implementations
+- Different exception handling
+- Different testing strategies
+- Different configuration approaches
+- Duplicated infrastructure code
+- Inconsistent API responses
+- Difficult onboarding for new developers
 
-"What needs to happen?"
+PPST solves these problems by providing one consistent engineering foundation that every backend service shares.
 
-It does not answer:
+Instead of reinventing infrastructure for every project, developers inherit a proven architecture and focus only on implementing business requirements.
 
-"How is data stored?"
+This approach improves:
 
-or
+- Maintainability
+- Readability
+- Scalability
+- Developer productivity
+- Team collaboration
+- Long-term consistency
 
-"What business rule determines this?"
-
----
-
-## Domain Layer
-
-Purpose:
-
-Store business knowledge.
-
-Responsibilities:
-
-- Business rules
-- Validation rules
-- Domain-specific calculations
-- Policies
-
-Example:
-
-ItemRules.is_low_stock(quantity)
-
-belongs in the domain because it represents business behavior rather than infrastructure.
-
-Business rules should not depend on FastAPI, SQLAlchemy, or databases.
+The result is a collection of backend services that all look, behave, and evolve in a predictable manner.
 
 ---
 
-## Infrastructure Layer
+# 3. Design Philosophy
 
-Purpose:
+PPST is built around one simple philosophy:
 
-Communicate with external systems.
+> **Infrastructure should remain stable. Business logic should evolve.**
 
-Responsibilities:
+The architecture should not change every time a new backend service is created.
 
-- Database access
-- Repository implementations
-- Logging
-- Cache
-- Messaging
-- External APIs
+Instead, only the business domain should change.
 
-Infrastructure answers the question:
-
-"How do we communicate with external systems?"
-
-It should never contain business rules.
-
----
-
-## Why Separate the Layers?
-
-Separating responsibilities provides several advantages:
-
-- Easier testing
-- Better maintainability
-- Clear ownership
-- Lower coupling
-- Higher scalability
-- Better readability
-
-When business rules change, only the domain changes.
-
-When databases change, only the infrastructure changes.
-
-When APIs change, only the routes and contracts change.
-
-The rest of the system remains stable.
-
----
-
-## PPST Design Principle
-
-The framework should remain stable.
-
-Business logic should evolve.
-
-Every new service should reuse the same architecture while replacing only:
+When creating a new service, developers typically replace:
 
 - Domain models
 - Business rules
-- Contracts
-- Repository implementation
+- Application use cases
+- Repository implementations
+- API contracts
 
-Everything else should remain familiar across every service.
+Everything else should remain consistent.
 
-## Request Lifecycle
+This includes:
 
-Every HTTP request entering PPST follows the same execution path regardless of business domain.
+- Project structure
+- Dependency Injection
+- Logging
+- Configuration
+- Exception handling
+- Testing
+- Middleware
+- Startup process
 
-The framework is designed so that every layer has one responsibility.
+This philosophy creates systems that are predictable, reusable, and easier to maintain over time.
 
-                 Client
-                    │
-                    ▼
-            FastAPI Route
-                    │
-                    ▼
-         Dependency Injection
-                    │
-                    ▼
-          Application Service
-                    │
-                    ▼
-             Domain Rules
-                    │
-                    ▼
-             Repository Layer
-                    │
-                    ▼
-            SQLAlchemy ORM
-                    │
-                    ▼
-               Database
-                    │
-                    ▼
-             Repository Layer
-                    │
-                    ▼
-          Application Service
-                    │
-                    ▼
-         Response Contract
-                    │
-                    ▼
-                FastAPI
-                    │
-                    ▼
-                 Client
+PPST follows several well-established software engineering principles:
 
+### Separation of Concerns (SoC)
 
+Every layer should solve one specific problem.
 
+Responsibilities are separated so that changes in one part of the application have minimal impact on the rest of the system.
 
-Step 1
+### Single Responsibility Principle (SRP)
 
-Client sends
+Every module, class, and layer should have one primary responsibility.
 
-POST /items
+This improves readability, maintainability, and testing.
 
-with
+### Clean Architecture
 
-{
-    "name":"Laptop",
-    "quantity":4
-}
+Business rules should remain independent of frameworks, databases, and external technologies.
 
-Step 2
+Frameworks may change.
 
-The API Route
+Business rules should not.
 
-Responsibilities:
+### Dependency Inversion
 
-Validate request
-Get database session
-Resolve dependencies
-Call ItemService
+High-level application logic should depend on abstractions rather than implementation details.
 
-No business logic exists here.
+This makes components easier to replace and test.
 
-Step 3
+### Composition over Duplication
 
-Dependency Injection
+Instead of copying infrastructure into every project, services reuse the same architectural foundation and compose new business functionality on top of it.
 
-The container creates
+---
 
-ItemRepository
+# 4. Engineering Principles
 
-↓
+Every backend service built using PPST should follow the same engineering rules.
 
-ItemService
+These principles keep the codebase consistent and maintainable as the platform grows.
 
-and injects the dependencies into the route.
+## One Responsibility Per Layer
 
-This keeps object creation outside the business logic.
+Every architectural layer exists for one purpose.
 
-Step 4
+Routes process HTTP requests.
 
-Application Service
+Application services coordinate workflows.
 
-The service coordinates the workflow.
+The domain contains business rules.
 
-ItemRepository.create()
+Infrastructure communicates with external systems.
 
-↓
+Responsibilities should never overlap.
 
-ItemRules.is_low_stock()
+---
 
-↓
+## Keep Business Logic Out of Routes
 
-ItemResponse
+API routes should remain thin.
 
-The service orchestrates the application.
+Their responsibilities are limited to:
 
-Step 5
+- Receiving requests
+- Validating input
+- Resolving dependencies
+- Calling application services
+- Returning responses
 
-Domain Layer
+Routes should never make business decisions.
 
-Business rules execute.
+---
 
-Example:
+## Business Rules Belong to the Domain
 
-LOW_STOCK_THRESHOLD = 5
+Business policies belong inside the domain layer.
 
-Only the domain knows this rule.
+Examples include:
 
-Step 6
+- Inventory thresholds
+- Discount calculations
+- Validation policies
+- Pricing rules
+- Approval logic
 
-Repository
+The domain should remain independent of FastAPI, SQLAlchemy, databases, and external services.
 
-The repository communicates with SQLAlchemy.
+---
 
-Responsibilities:
+## Services Coordinate Workflows
 
-INSERT
-SELECT
-UPDATE
-DELETE
+Application services orchestrate use cases.
 
-No business rules exist here.
+They determine:
 
-Step 7
+- Which repositories to call
+- Which domain rules to execute
+- Which response contracts to return
 
-Database
+Services coordinate the application.
 
-The transaction commits.
+They do not directly manage HTTP requests or database implementation details.
 
-SQLAlchemy refreshes the object.
+---
 
-Step 8
+## Infrastructure Handles External Systems
 
-Response Contract
+Infrastructure communicates with technologies outside the application.
 
-The service converts the database model into
+Examples include:
 
-ItemResponse
+- Databases
+- Logging
+- Cache
+- Messaging
+- File Storage
+- External APIs
 
-This prevents exposing database models directly.
+Infrastructure should never contain business rules.
 
-Step 9
+---
 
-FastAPI
+## Centralize Configuration
 
-FastAPI validates
+Configuration values should have a single source of truth.
 
-response_model=ItemResponse
+Environment variables should be loaded into a centralized configuration object and shared across the application.
 
-before returning
+Hardcoded configuration values should be avoided whenever possible.
 
-HTTP 200
+---
 
-to the client.
+## Use Dependency Injection
+
+Application components should receive their dependencies instead of creating them directly.
+
+Dependency Injection reduces coupling and improves testing by making components easier to replace.
+
+---
+
+## Test Business Logic Independently
+
+Business logic should be testable without requiring:
+
+- FastAPI
+- SQLAlchemy
+- Databases
+- External APIs
+
+Unit tests should focus on validating business behavior rather than infrastructure.
+
+---
+
+## Keep Infrastructure Stable
+
+The architecture should remain consistent across every backend service.
+
+As new services are created, developers should only replace the business domain while reusing the same engineering foundation.
+
+This consistency allows every PPST-based project to feel familiar regardless of its business purpose.
+
+---
+
+## Phase 1 Summary
+
+By the end of this section, the goals of PPST should be clear:
+
+- Provide a reusable backend engineering foundation.
+- Standardize architecture across multiple services.
+- Separate business logic from infrastructure.
+- Encourage clean, maintainable, and testable code.
+- Allow developers to focus on solving business problems instead of rebuilding common infrastructure.
+
+The following sections explain how PPST achieves these goals through its architecture, layers, request lifecycle, and engineering components.
