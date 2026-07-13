@@ -688,3 +688,425 @@ At the end of Phase 2 you should understand:
 ✓ Why contracts protect the API
 
 These principles remain the same for every future PPST-based service, regardless of its business domain.
+
+
+# Phase 3 — Engineering Components
+
+# Engineering Components
+
+PPST is composed of several reusable engineering components.
+
+Each component has one responsibility and is designed to be reused across every backend service.
+
+Together, these components provide the infrastructure required for building maintainable and scalable applications.
+
+---
+
+# Configuration
+
+Location
+
+app/core/config.py
+
+Purpose
+
+Provide a single source of truth for application configuration.
+
+Responsibilities
+
+- Environment variables
+- Database configuration
+- Application settings
+- Future cloud configuration
+
+Instead of scattering configuration throughout the project, every component retrieves settings from one location.
+
+Example
+
+DATABASE_URL
+
+DEBUG
+
+PROJECT_NAME
+
+VERSION
+
+Benefits
+
+- No hardcoded values
+- Easier deployments
+- Environment-specific configuration
+- Better maintainability
+
+---
+
+# Dependency Injection
+
+Location
+
+app/bootstrap/container.py
+
+Purpose
+
+Construct application dependencies.
+
+Responsibilities
+
+- Create repositories
+- Create services
+- Inject dependencies into API routes
+
+Instead of routes creating objects directly, the container assembles the application.
+
+Example
+
+Database Session
+
+↓
+
+Repository
+
+↓
+
+Application Service
+
+↓
+
+API Route
+
+Benefits
+
+- Loose coupling
+- Easier testing
+- Replaceable implementations
+- Clear object ownership
+
+---
+
+# Repository Pattern
+
+Location
+
+app/infrastructure/repositories/
+
+Purpose
+
+Isolate database operations from business logic.
+
+Responsibilities
+
+- INSERT
+- SELECT
+- UPDATE
+- DELETE
+
+Repositories communicate with SQLAlchemy.
+
+Application services never execute SQL directly.
+
+Benefits
+
+- Database independence
+- Easier testing
+- Cleaner services
+- Easier migrations
+
+---
+
+# Domain Rules
+
+Location
+
+app/domain/
+
+Purpose
+
+Contain business knowledge.
+
+Examples
+
+Inventory API
+
+ItemRules
+
+Data Ingestion Pipeline
+
+DocumentRules
+
+The domain decides business behavior.
+
+Examples
+
+Low stock threshold
+
+Supported document types
+
+Validation policies
+
+Business rules should never depend on FastAPI or SQLAlchemy.
+
+Benefits
+
+- Centralized business logic
+- Easier maintenance
+- Reusable policies
+- Framework independence
+
+---
+
+# Application Services
+
+Location
+
+app/application/
+
+Purpose
+
+Coordinate business workflows.
+
+Services answer the question:
+
+"What should happen?"
+
+Responsibilities
+
+- Coordinate repositories
+- Execute business rules
+- Build response contracts
+- Raise application exceptions
+
+Services should never know how the database works.
+
+Benefits
+
+- Clear orchestration
+- Easier testing
+- Predictable workflows
+
+---
+
+# API Contracts
+
+Location
+
+app/application/contracts/
+
+Purpose
+
+Define communication between clients and the application.
+
+Types
+
+Request Models
+
+Response Models
+
+Error Models
+
+Contracts prevent exposing internal database models to external clients.
+
+Benefits
+
+- Stable APIs
+- Validation
+- Documentation
+- Loose coupling
+
+---
+
+# Global Exception Handling
+
+Location
+
+app/core/handlers.py
+
+Purpose
+
+Provide consistent error handling across the application.
+
+Instead of returning different error formats from different routes, every exception is transformed into a standardized response.
+
+Example
+
+{
+    "success": false,
+    "error": {
+        "type": "NotFoundException",
+        "message": "Item not found"
+    }
+}
+
+Benefits
+
+- Consistent APIs
+- Easier debugging
+- Better client integration
+
+---
+
+# Structured Logging
+
+Location
+
+app/infrastructure/logging/
+
+Purpose
+
+Capture application behavior.
+
+Logging records
+
+Incoming requests
+
+Outgoing responses
+
+Execution time
+
+HTTP status
+
+Errors
+
+Example
+
+START GET /documents
+
+END GET /documents
+
+STATUS=200
+
+TIME=0.012s
+
+Benefits
+
+- Debugging
+- Monitoring
+- Performance analysis
+- Production troubleshooting
+
+---
+
+# Event Bus
+
+Location
+
+app/events/
+
+Purpose
+
+Allow components to communicate without direct dependencies.
+
+Instead of calling another service directly, components publish events.
+
+Example
+
+Document Uploaded
+
+↓
+
+Event Bus
+
+↓
+
+Worker
+
+↓
+
+Document Processing
+
+Benefits
+
+- Loose coupling
+- Asynchronous processing
+- Scalable architecture
+
+---
+
+# Workers
+
+Location
+
+app/workers/
+
+Purpose
+
+Execute background processing.
+
+Examples
+
+Document processing
+
+Embedding generation
+
+Cost analysis
+
+Notifications
+
+Workers allow long-running tasks to execute outside HTTP requests.
+
+Benefits
+
+- Faster APIs
+- Better scalability
+- Asynchronous execution
+
+---
+
+# Testing
+
+Location
+
+tests/
+
+Purpose
+
+Verify business behavior.
+
+Current coverage
+
+Application services
+
+Business rules
+
+Future coverage
+
+Repositories
+
+API routes
+
+Workers
+
+Integration tests
+
+Benefits
+
+- Regression prevention
+- Safer refactoring
+- Higher confidence
+
+---
+
+# Why These Components Exist
+
+Each engineering component solves one specific problem.
+
+Configuration manages settings.
+
+Dependency Injection manages object creation.
+
+Repositories manage persistence.
+
+Services manage workflows.
+
+Domain manages business knowledge.
+
+Contracts manage communication.
+
+Logging records behavior.
+
+Exception handling standardizes failures.
+
+Workers execute background tasks.
+
+Events connect independent components.
+
+Together these components form the reusable engineering foundation of PPST.
