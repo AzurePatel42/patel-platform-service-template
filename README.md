@@ -1110,3 +1110,341 @@ Workers execute background tasks.
 Events connect independent components.
 
 Together these components form the reusable engineering foundation of PPST.
+
+# Phase 4 — Developer Handbook
+
+---
+
+# Building a New Service with PPST
+
+PPST is designed to be reused.
+
+Instead of creating every backend application from scratch, new services begin by copying PPST and replacing only the business domain.
+
+The engineering architecture remains identical.
+
+This provides consistency across every service in the Patel Engineering ecosystem.
+
+---
+
+# Development Workflow
+
+Every new service follows the same engineering workflow.
+
+                Copy PPST
+                     │
+                     ▼
+             Rename Project
+                     │
+                     ▼
+             Replace Domain
+                     │
+                     ▼
+        Implement Business Rules
+                     │
+                     ▼
+         Replace Repository Logic
+                     │
+                     ▼
+          Register Dependencies
+                     │
+                     ▼
+             Register Routes
+                     │
+                     ▼
+               Run Tests
+                     │
+                     ▼
+              Commit & Push
+
+Following the same workflow for every project creates predictable engineering practices and reduces maintenance complexity.
+
+---
+
+# Step 1 — Copy PPST
+
+Create a copy of the PPST repository.
+
+Example:
+
+patel-platform-service-template
+
+↓
+
+patel-data-ingestion-pipeline
+
+PPST remains the master template.
+
+The new repository becomes the business application.
+
+---
+
+# Step 2 — Rename the Domain
+
+PPST contains an example domain called Item.
+
+Replace the example domain with your business domain.
+
+Example:
+
+Item
+
+↓
+
+Document
+
+This includes:
+
+• Domain Rules
+
+• Application Service
+
+• Repository
+
+• Database Model
+
+• API Routes
+
+• Request Contracts
+
+• Response Contracts
+
+The infrastructure remains unchanged.
+
+---
+
+# Step 3 — Keep the Architecture
+
+The project structure should remain identical.
+
+app/
+
+    api/
+
+    application/
+
+    bootstrap/
+
+    core/
+
+    domain/
+
+    events/
+
+    infrastructure/
+
+    workers/
+
+Do not remove layers because a project is small.
+
+Consistency is more valuable than reducing folders.
+
+---
+
+# Step 4 — Add Business Rules
+
+Business knowledge belongs only inside the Domain layer.
+
+Example:
+
+DocumentRules.is_supported_file()
+
+Business rules should never be placed inside:
+
+• API Routes
+
+• Repository
+
+• SQLAlchemy Models
+
+• Infrastructure
+
+The Domain layer should remain independent of frameworks and databases.
+
+---
+
+# Step 5 — Build the Application Service
+
+The Application layer coordinates the workflow.
+
+Example:
+
+Route
+
+↓
+
+DocumentService
+
+↓
+
+Repository
+
+↓
+
+Domain Rules
+
+↓
+
+Response Contract
+
+The service answers the question:
+
+"What needs to happen?"
+
+It should not contain SQL queries or HTTP logic.
+
+---
+
+# Step 6 — Repository Responsibilities
+
+Repositories communicate with the database.
+
+Responsibilities include:
+
+• Create
+
+• Read
+
+• Update
+
+• Delete
+
+Repositories should never contain business rules.
+
+Their responsibility is persistence only.
+
+---
+
+# Step 7 — Dependency Injection
+
+Dependencies are assembled inside the Bootstrap layer.
+
+Routes receive fully configured services.
+
+Route
+
+↓
+
+DocumentService
+
+↓
+
+DocumentRepository
+
+↓
+
+Database Session
+
+Routes should never manually instantiate repositories or services.
+
+Dependency Injection improves maintainability, testing, and flexibility.
+
+---
+
+# Step 8 — Register Routes
+
+Each service registers its router inside the Application Factory.
+
+Example:
+
+app.include_router(document_router)
+
+This allows new features to be added without changing the application's architecture.
+
+---
+
+# Step 9 — Verify the Service
+
+Before committing code, verify:
+
+✓ Swagger loads correctly
+
+✓ CRUD endpoints work
+
+✓ Logging works
+
+✓ Exception handling works
+
+✓ Structured error responses are returned
+
+✓ Unit tests pass
+
+Every milestone should end with a stable, working application.
+
+---
+
+# Step 10 — Commit the Milestone
+
+Commit only completed engineering milestones.
+
+Example:
+
+git add .
+
+git commit -m "Complete document domain migration from PPST template"
+
+git push origin main
+
+A clean Git history tells the engineering story of the project.
+
+Each commit should represent one meaningful improvement.
+
+---
+
+# Engineering Principles
+
+Every service built from PPST should follow the same principles.
+
+Business Rules belong in the Domain.
+
+Application Services coordinate workflows.
+
+Repositories communicate with the database.
+
+Routes remain thin.
+
+Configuration comes from config.py.
+
+Logging is centralized.
+
+Exceptions are handled globally.
+
+Dependencies are injected.
+
+Every feature is tested.
+
+Every milestone is documented.
+
+Consistency is more valuable than cleverness.
+
+---
+
+# Migration Checklist
+
+Before considering a migration complete, verify:
+
+✓ Domain renamed
+
+✓ Contracts updated
+
+✓ Repository replaced
+
+✓ Service implemented
+
+✓ Routes registered
+
+✓ Dependency Injection configured
+
+✓ Database models updated
+
+✓ Logging verified
+
+✓ Error handling verified
+
+✓ Tests passing
+
+✓ README updated
+
+✓ GitHub pushed
+
+Following this checklist ensures every PPST-based service maintains the same engineering quality and standards.
