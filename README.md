@@ -1447,4 +1447,255 @@ Before considering a migration complete, verify:
 
 ✓ GitHub pushed
 
-Following this checklist ensures every PPST-based service maintains the same engineering quality and standards.
+
+
+# Phase 5 — Building Services with PPST
+
+## From Template to Platform
+
+PPST is not an application.
+
+It is an engineering foundation.
+
+Every backend service begins with the same architecture and engineering standards before business-specific functionality is introduced.
+
+Instead of designing a new project from scratch each time, developers clone PPST and replace only the business domain.
+
+The infrastructure, architecture, and engineering practices remain consistent across every service.
+
+---
+
+# Engineering Workflow
+
+Every service developed from PPST follows the same lifecycle.
+
+```
+Architecture
+
+↓
+
+Implementation
+
+↓
+
+Testing
+
+↓
+
+Debugging
+
+↓
+
+Documentation
+
+↓
+
+Release
+
+↓
+
+Cloud Deployment
+
+↓
+
+Maintenance
+```
+
+This ensures every project follows the same engineering process from its first commit through production deployment.
+
+---
+
+# Service Development Workflow
+
+When creating a new service, the recommended process is:
+
+1. Clone PPST.
+2. Rename the project.
+3. Replace the domain model.
+4. Replace business rules.
+5. Implement repositories.
+6. Implement application services.
+7. Expose API endpoints.
+8. Write unit tests.
+9. Update the README.
+10. Deploy.
+
+Everything else remains unchanged.
+
+---
+
+# Example
+
+Creating an Inventory API requires replacing:
+
+```
+Item
+```
+
+Creating a Data Ingestion Pipeline requires replacing:
+
+```
+Document
+```
+
+Creating an Authentication Service requires replacing:
+
+```
+User
+```
+
+Creating a Retrieval Service requires replacing:
+
+```
+Embedding
+```
+
+The architecture remains exactly the same.
+
+---
+
+# Reusable Engineering Components
+
+Every service automatically inherits:
+
+- Clean Architecture
+- Dependency Injection
+- Repository Pattern
+- Configuration Management
+- Structured Logging
+- Global Exception Handling
+- Standard Response Models
+- Unit Testing
+- Worker Support
+- Event Support
+- Docker Support
+
+Business logic changes.
+
+Infrastructure does not.
+
+---
+
+# Engineering Standards
+
+Every PPST-based service should satisfy the following checklist before release.
+
+## Architecture
+
+- Clean Architecture
+- Separation of Concerns
+- Single Responsibility Principle
+- Repository Pattern
+- Dependency Injection
+
+## Quality
+
+- Unit tests passing
+- No hardcoded configuration
+- Structured logging
+- Global exception handling
+- Consistent API contracts
+
+## Deployment
+
+- Environment-variable configuration
+- Docker support
+- Production-ready configuration
+
+---
+
+# PPST Ecosystem
+
+PPST serves as the common engineering foundation for every Patel Engineering backend service.
+
+```
+                     PPST
+
+                        │
+      ┌─────────────────┼─────────────────┐
+      │                 │                 │
+      ▼                 ▼                 ▼
+
+ Inventory API   Data Ingestion   Cost Intelligence
+
+      │                 │                 │
+      └──────────────┬────────────────────┘
+                     │
+                     ▼
+
+           Retrieval Service
+
+                     │
+                     ▼
+
+             Authentication Service
+```
+
+Every service shares the same engineering principles while implementing different business capabilities.
+
+---
+
+# Azure Platform Vision
+
+After PPST reaches v0.1.0, every service will be deployed using the same cloud architecture.
+
+```
+                 Azure
+
+        Azure Container Apps
+                 │
+                 ▼
+
+             PPST v0.1.0
+
+                 │
+─────────────────┼────────────────────
+
+Inventory API
+
+Cost Intelligence
+
+Data Ingestion Pipeline
+
+Retrieval Service
+
+Authentication Service
+```
+
+This provides a consistent deployment strategy, operational model, and development experience across the entire platform.
+
+---
+
+# Future Roadmap
+
+PPST v0.1.0 establishes the engineering foundation.
+
+Future versions may introduce additional capabilities, including:
+
+- Background job scheduling
+- Authentication and authorization
+- Event-driven messaging
+- Distributed caching
+- Observability and tracing
+- CI/CD pipelines
+- Kubernetes support
+- Azure-native integrations
+
+These enhancements should extend the platform without changing its architectural principles.
+
+---
+
+# Conclusion
+
+PPST represents a long-term engineering standard rather than a single project.
+
+Its purpose is to eliminate repetitive infrastructure work so developers can focus on solving business problems.
+
+By enforcing consistent architecture, reusable engineering components, and standardized development practices, PPST enables backend services to remain maintainable, scalable, and production-ready throughout their lifecycle.
+
+The goal is simple:
+
+**Build the platform once. Reuse it everywhere.**
+
+
+

@@ -17,4 +17,5 @@ class ItemUpdateRequest(BaseModel):
     quantity: int | None = None
 
 
-    
+class MessageResponse(BaseModel):
+    message: str 

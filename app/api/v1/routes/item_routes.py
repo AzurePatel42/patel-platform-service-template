@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from app.bootstrap.container import get_item_service
 from sqlalchemy.orm import Session
 
-from app.application.contracts.item_schemas import ItemCreateRequest, ItemResponse, ItemUpdateRequest
+from app.application.contracts.item_schemas import ItemCreateRequest, ItemResponse, ItemUpdateRequest, MessageResponse
 
 from app.bootstrap.container import get_item_service
 from app.infrastructure.db.deps import get_db
@@ -71,3 +71,14 @@ def delete_item(item_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Item not found")
 
     return {"message": "Item deleted successfully"}
+
+@router.delete(
+    "/items/{item_id}",
+    response_model=MessageResponse
+)
+def delete_item_with_response(item_id: int, db: Session = Depends(get_db)):
+    service = get_item_service(db)
+    success = service.delete_item(item_id)
+    if not success:
+        raise HTTPException(status_code=404, detail="Item not found")
+    return MessageResponse(message="Item deleted successfully")
